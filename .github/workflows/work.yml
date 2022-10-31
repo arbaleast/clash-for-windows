@@ -58,13 +58,17 @@ jobs:
           rm -rf clash
           rm -rf Clash.for.Windows-0.20.6-win.7z 
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+          
+      - name: Get latest tag
+        id: tag
+        run: |
+          echo "value=$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)" >> $GITHUB_OUTPUT
 
           
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          release_tag: $(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)
         with:
-          tag_name: ${{env.release_tag}}
+          tag_name: ${{ steps.tag.outputs.value }}
           files: ${{ env.FIRMWARE }}/*.7z
