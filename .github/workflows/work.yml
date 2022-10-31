@@ -18,6 +18,7 @@ jobs:
           curl -fsSL https://github.com/arbaleast/clash-for-windows/raw/main/install | bash
           export PATH=/home/ubuntu/.fnm:$PATH
           eval "`fnm env`"
+          source /home/runner/.bashrc
           fnm install v16.17.1
           sudo apt install -y node wget jq curl
           npm install -g asar
