@@ -24,7 +24,7 @@ jobs:
           sudo apt install -y wget jq curl nodejs
         
           npm install -g asar
-          wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[0].browser_download_url' | sed s/\"//g`
+          wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].browser_download_url' | sed s/\"//g`
           
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
