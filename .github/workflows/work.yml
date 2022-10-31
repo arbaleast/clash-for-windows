@@ -4,51 +4,51 @@ on:
     branches:
       - main
 jobs:
-  name: remove ads
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      
-    - name: init env
-      run:
-        apt update && apt upgrade -y
-        apt install node wget jq curl
-        npm install -g asar
-        wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[0].browser_download_url' | sed s/\"//g`
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
         
-    - name: replace ad string
-      run:
-        ls
-        
-        7z x *.7z -oclash
-        cd clash/resource
-        asar e app.asar app
-        rm app.asar
-        sed -i 's/Advertisement//g' app/dist/electron/renderer.js
-        sed -i 's/"ad-img-list"/""/g' app/dist/electron/renderer.js
-        sed -i 's/"ad-img"/""/g' app/dist/electron/renderer.js
-        sed -i 's/"lazy-image-view"/""/g' app/dist/electron/renderer.js
+      - name: init env
+        run:
+          apt update && apt upgrade -y
+          apt install node wget jq curl
+          npm install -g asar
+          wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[0].browser_download_url' | sed s/\"//g`
+          
+      - name: replace ad string
+        run:
+          ls
+          
+          7z x *.7z -oclash
+          cd clash/resource
+          asar e app.asar app
+          rm app.asar
+          sed -i 's/Advertisement//g' app/dist/electron/renderer.js
+          sed -i 's/"ad-img-list"/""/g' app/dist/electron/renderer.js
+          sed -i 's/"ad-img"/""/g' app/dist/electron/renderer.js
+          sed -i 's/"lazy-image-view"/""/g' app/dist/electron/renderer.js
+         
+          asar pack app app.asar
+          rm -rf app
+          cd ../
+          ls
+          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+          7z a "../clash-for-windows.0.20.0.7z" * -mx9 -mmls
+          t on
        
-        asar pack app app.asar
-        rm -rf app
-        cd ../
-        ls
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        7z a "../clash-for-windows.0.20.0.7z" * -mx9 -mmls
-        t on
-     
-    - name: Generate release tag
-      run: |
-        echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
-        touch release.txt
-        echo "::set-output name=status::success"
-        
-    - name: Upload firmware to release
-      uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.tag.outputs.release_tag }}
-        body_path: release.txt
-        files: ${{ env.FIRMWARE }}/*
+      - name: Generate release tag
+        run: |
+          echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
+          touch release.txt
+          echo "::set-output name=status::success"
+          
+      - name: Upload firmware to release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          body_path: release.txt
+          files: ${{ env.FIRMWARE }}/*
