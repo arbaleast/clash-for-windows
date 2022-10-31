@@ -50,8 +50,7 @@ jobs:
           cd ../
           ls
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-          7z a "../clash-for-windows.$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2).7z" * -mx9 -mmls
-          t on
+          7z a "../clash-for-windows.$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2).7z" * -mx9 -mmt on
        
       - name: Generate release tag
         run: |
