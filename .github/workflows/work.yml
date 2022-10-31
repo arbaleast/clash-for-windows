@@ -65,7 +65,7 @@ jobs:
       - name: Generate release tag
         id: tag
         run: |
-          echo "release_tag=${{ env.VERSION }}" >> $GITHUB_OUTPUT
+          echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
           touch release.txt
           echo "status=success" >> $GITHUB_OUTPUT
           
