@@ -25,7 +25,7 @@ jobs:
         
           npm install -g asar
           wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].browser_download_url' | sed s/\"//g`
-          echo `VERSION=$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)` >> $GITHUB_ENV
+          echo `release_tag=$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)` >> $GITHUB_ENV
 
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@main
         if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
         with:
-          name: clash-for-windows${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+          name: clash-for-windows${{ env.release_tag }}
           path: clash-for-windows/clash-for-windows.${{ env.VERSION }}.7z
           
       - name: replace ad string
@@ -57,8 +57,8 @@ jobs:
           rm -rf app
           cd ../
           ls
-          echo "FIRMWARE=../clash-for-windows.${{ env.VERSION }}.7z" >> $GITHUB_ENV
-          7z a ../clash-for-windows.${{ env.VERSION }}.7z *
+          echo "FIRMWARE=../clash-for-windows.${{ env.release_tag }}.7z" >> $GITHUB_ENV
+          7z a ../clash-for-windows.${{ env.release_tag }}.7z *
           echo ls -al
           echo "#########"
           echo ls -al ../
@@ -68,6 +68,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.VERSION }}
-          body_path: release.txt
+          tag_name: ${{ env.release_tag }}
           files: ${{ env.FIRMWARE }}/*
