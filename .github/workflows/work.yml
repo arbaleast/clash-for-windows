@@ -63,10 +63,19 @@ jobs:
           echo "#########"
           echo ls -al ../
           
+      - name: Generate release tag
+        id: tag
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        run: |
+          echo "release_tag=${{ env.VERSION }}" >> $GITHUB_OUTPUT
+          touch release.txt
+          echo "status=success" >> $GITHUB_OUTPUT
+          
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.release_tag }}
+          tag_name: ${{ steps.step1.outputs.release_tag }}
+          body_path: release.txt
           files: ${{ env.FIRMWARE }}/*
