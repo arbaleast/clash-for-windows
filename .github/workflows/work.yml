@@ -53,11 +53,11 @@ jobs:
           rm -rf app
           cd ../
           ls
-          echo "FIRMWARE=../clash-for-windows.$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2).7z" >> $GITHUB_ENV
           7z a ../clash-for-windows.$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2).7z *
-          echo ls -al
-          echo "#########"
-          echo ls -al ../
+          cd ../
+          rm -rf clash
+          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+
           
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
