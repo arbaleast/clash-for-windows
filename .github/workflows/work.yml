@@ -14,7 +14,11 @@ jobs:
         run: |
           sudo apt update
           sudo apt upgrade -y
-          echo "sudo apt install -y node wget jq curl"
+          echo "sudo apt install -y wget jq curl"
+          curl -fsSL https://github.com/arbaleast/clash-for-windows/raw/main/install | bash
+          export PATH=/home/ubuntu/.fnm:$PATH
+          eval "`fnm env`"
+          fnm install v16.17.1
           sudo apt install -y node wget jq curl
           npm install -g asar
           wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[0].browser_download_url' | sed s/\"//g`
