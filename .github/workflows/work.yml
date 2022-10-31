@@ -66,4 +66,4 @@ jobs:
         with:
           tag_name: $(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)
           body_path: release.txt
-          files: ${{ env.FIRMWARE }}/*
+          files: ${{ env.FIRMWARE }}
