@@ -17,15 +17,18 @@ jobs:
         uses: actions/checkout@v2
         
       - name: init env
+        id: init
+        env:
+          release_tag: $(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)
         run: |
           sudo apt update
           sudo apt upgrade -y
           echo "sudo apt install -y wget jq curl"
           sudo apt install -y wget jq curl nodejs p7zip-full
+          echo ${{ env.release_tag }}
         
           npm install -g asar
           wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].browser_download_url' | sed s/\"//g`
-          echo `release_tag=$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)` >> $GITHUB_ENV
 
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
@@ -33,12 +36,6 @@ jobs:
         env:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          
-      - name: Upload bin directory
-        uses: actions/upload-artifact@main
-        with:
-          name: clash-for-windows${{ env.release_tag }}
-          path: clash-for-windows/clash-for-windows.${{ env.release_tag }}.7z
           
       - name: replace ad string
         run: |
@@ -56,24 +53,17 @@ jobs:
           rm -rf app
           cd ../
           ls
-          echo "FIRMWARE=../clash-for-windows.${{ env.release_tag }}.7z" >> $GITHUB_ENV
-          7z a ../clash-for-windows.${{ env.release_tag }}.7z *
+          echo "FIRMWARE=../clash-for-windows.$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2).7z" >> $GITHUB_ENV
+          7z a ../clash-for-windows.$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2).7z *
           echo ls -al
           echo "#########"
           echo ls -al ../
-          
-      - name: Generate release tag
-        id: tag
-        run: |
-          echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
-          touch release.txt
-          echo "status=success" >> $GITHUB_OUTPUT
           
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.tag.outputs.release_tag }}
+          tag_name: $(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)
           body_path: release.txt
           files: ${{ env.FIRMWARE }}/*
