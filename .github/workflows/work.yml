@@ -35,7 +35,7 @@ jobs:
           
       - name: replace ad string
         run: |
-          ls
+          echo ls
           7z x *.7z -oclash
           cd clash/resources
           asar e app.asar app
@@ -50,10 +50,11 @@ jobs:
           cd ../
           ls
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-          7z a clash-for-windows.$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2).7z * -mx9 -mmt on
-          ls -al
+          version=`curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2`
+          7z a clash-for-windows.$version.7z * -mx9 -mmt on
+          echo ls -al
           echo "#########"
-          ls -al ../
+          echo ls -al ../
           
       - name: Generate release tag
         run: |
