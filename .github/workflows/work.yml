@@ -25,13 +25,21 @@ jobs:
         
           npm install -g asar
           wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].browser_download_url' | sed s/\"//g`
-          
+          echo `VERSION=$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)` >> $GITHUB_ENV
+
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
         if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
         env:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          
+      - name: Upload bin directory
+        uses: actions/upload-artifact@main
+        if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+        with:
+          name: clash-for-windows${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+          path: clash-for-windows/clash-for-windows.${{ env.VERSION }}.7z
           
       - name: replace ad string
         run: |
@@ -50,8 +58,7 @@ jobs:
           cd ../
           ls
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-          version=`curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2`
-          7z a clash-for-windows.$version.7z * -mx9 -mmt on
+          7z a ../clash-for-windows.${{ env.VERSION }}.7z * -mx9 -mmt on
           echo ls -al
           echo "#########"
           echo ls -al ../
