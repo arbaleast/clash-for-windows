@@ -57,7 +57,7 @@ jobs:
           rm -rf app
           cd ../
           ls
-          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+          echo "FIRMWARE=../clash-for-windows.${{ env.VERSION }}.7z" >> $GITHUB_ENV
           7z a ../clash-for-windows.${{ env.VERSION }}.7z * -mx9 -mmt on
           echo ls -al
           echo "#########"
