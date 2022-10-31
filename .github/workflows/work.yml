@@ -56,6 +56,7 @@ jobs:
           7z a ../clash-for-windows.$(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2).7z *
           cd ../
           rm -rf clash
+          rm -rf Clash.for.Windows-0.20.6-win.7z 
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
 
           
@@ -63,7 +64,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: $(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)
         with:
-          tag_name: $RELEASE_TAG
-          files: ${{ env.FIRMWARE }}/*
+          tag_name: ${{ jobs.steps.init.env.release_tag }}
+          files: ${{ env.FIRMWARE }}/*.7z
