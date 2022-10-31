@@ -64,6 +64,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          release_tag: $(curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].name' | sed 's/"//g' | cut -d "-" -f 2)
         with:
-          tag_name: ${{ jobs.steps.init.env.release_tag }}
+          tag_name: ${{env.release_tag}}
           files: ${{ env.FIRMWARE }}/*.7z
