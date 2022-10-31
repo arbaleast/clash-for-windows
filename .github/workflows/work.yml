@@ -12,7 +12,8 @@ jobs:
         
       - name: init env
         run: |
-          sudo apt update && apt upgrade -y
+          sudo apt update
+          sudo apt upgrade -y
           sudo apt install -y node wget jq curl
           npm install -g asar
           wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[0].browser_download_url' | sed s/\"//g`
