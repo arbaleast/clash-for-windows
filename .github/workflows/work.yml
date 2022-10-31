@@ -37,7 +37,7 @@ jobs:
         run: |
           ls
           7z x *.7z -oclash
-          cd clash/resource
+          cd clash/resources
           asar e app.asar app
           rm app.asar
           sed -i 's/Advertisement//g' app/dist/electron/renderer.js
