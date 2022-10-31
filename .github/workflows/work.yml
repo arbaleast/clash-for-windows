@@ -58,7 +58,7 @@ jobs:
           cd ../
           ls
           echo "FIRMWARE=../clash-for-windows.${{ env.VERSION }}.7z" >> $GITHUB_ENV
-          7z a ../clash-for-windows.${{ env.VERSION }}.7z * -mx9 -mmt on
+          7z a ../clash-for-windows.${{ env.VERSION }}.7z *
           echo ls -al
           echo "#########"
           echo ls -al ../
