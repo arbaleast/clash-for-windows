@@ -21,7 +21,7 @@ jobs:
           sudo apt update
           sudo apt upgrade -y
           echo "sudo apt install -y wget jq curl"
-          sudo apt install -y wget jq curl nodejs 7z
+          sudo apt install -y wget jq curl nodejs p7zip-full
         
           npm install -g asar
           wget `curl https://api.github.com/repos/Fndroid/clash_for_windows_pkg/releases/latest | jq '.assets[6].browser_download_url' | sed s/\"//g`
